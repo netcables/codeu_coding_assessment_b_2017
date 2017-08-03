@@ -112,7 +112,7 @@ public final class MyTokenReader implements TokenReader {
   }
   
   // Helper function to interpret different types of tokens
-  private Token interpretToken(String tokenContent) {
+  private Token interpretToken(String tokenContent) throws IOException{
 	  if(tokenContent.length() == 1) {
 		  switch(tokenContent.charAt(0)) {
 		  	case '+':
@@ -121,14 +121,16 @@ public final class MyTokenReader implements TokenReader {
 		  	case ';':
 		  		SymbolToken returnSymbolToken = new SymbolToken(tokenContent.charAt(0));
 				return returnSymbolToken;
-		  	case 'x':
-		  	case 'y':
-		  	case 'z':
-				NameToken returnNameToken = new NameToken(tokenContent);
-				return returnNameToken;
 		  	default:
-		  		NumberToken returnNumberToken = new NumberToken(Double.parseDouble(tokenContent));
-		  		return returnNumberToken;
+		  		if(Character.isLetter(tokenContent.charAt(0))) {
+		  			NameToken returnNameToken = new NameToken(tokenContent);
+					return returnNameToken;
+		  		} else if (Character.isDigit(tokenContent.charAt(0))){
+		  			NumberToken returnNumberToken = new NumberToken(Double.parseDouble(tokenContent));
+		  			return returnNumberToken;
+		  		} else {
+		  			throw new IOException("ERROR: Unexpected character inputted.");
+		  		}
 		  }
 		// Name Tokens
 	  } else if(tokenContent.equals("note") || tokenContent.equals("print") || tokenContent.equals("let")) {
@@ -136,6 +138,10 @@ public final class MyTokenReader implements TokenReader {
 		  return returnNameToken;
 		// String Tokens
 	  } else {
+		  if(tokenContent.charAt(0) == '-') {
+			  NumberToken returnNumberToken = new NumberToken(Double.parseDouble(tokenContent));
+			  return returnNumberToken;
+		  }
 		  StringToken returnStringToken = new StringToken(tokenContent);
 		  return returnStringToken;
 	  }
