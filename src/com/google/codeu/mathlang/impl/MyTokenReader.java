@@ -101,8 +101,22 @@ public final class MyTokenReader implements TokenReader {
   private String readWithNoQuotes() throws IOException {
     currentToken.setLength(0);
     while(remaining() > 0 && !Character.isWhitespace(peek())) {
-    	if(peek() == ';' && currentToken.length() > 0) {
-    		return currentToken.toString();
+    	if(currentToken.length() > 0) {
+    		int previousIndex = currentToken.length() - 1;
+    		if(currentToken.charAt(previousIndex) == '+') {
+	    		return currentToken.toString();
+    		} else if (currentToken.charAt(previousIndex) == '='){
+	    		return currentToken.toString();
+    		}
+    		else if(peek() == ';') {
+	    		return currentToken.toString();
+	    	} else if(peek() == '+') {
+	    		return currentToken.toString();
+	    	} else if(peek() == '=') {
+	    		return currentToken.toString();
+	    	} else {
+	    		currentToken.append(read());
+	    	}
     	} else {
     		currentToken.append(read());
     	}
