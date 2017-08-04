@@ -138,6 +138,17 @@ final class Test {
             calls.assertEnd();
           }
         });
+    
+    tester.test(
+            "Assign variable as multiple digit constant",
+            lines("let x = 256;"),
+            new TestCriteria() {
+              @Override
+              public void onTestEnd(CallTable calls) throws Exception {
+                calls.assertNext("let", new AddOperation(256));
+                calls.assertEnd();
+              }
+            });
 
     tester.test(
         "Adding two constant",
@@ -151,6 +162,19 @@ final class Test {
             calls.assertEnd();
           }
         });
+    
+    tester.test(
+            "Adding multiple digit constants",
+            lines("let x = 15 + 32;",
+                  "print x;"),
+            new TestCriteria() {
+              @Override
+              public void onTestEnd(CallTable calls) throws Exception {
+                calls.assertNext("let", new AddOperation(15), new AddOperation(32));
+                calls.assertNext("print", "47.0"); // use print to verify result
+                calls.assertEnd();
+              }
+            });
 
     tester.test(
         "Subtract two constant",
@@ -164,6 +188,32 @@ final class Test {
             calls.assertEnd();
           }
         });
+    
+    tester.test(
+            "Subtracting multiple digit constants",
+            lines("let x = 59 - 35;",
+                  "print x;"),
+            new TestCriteria() {
+              @Override
+              public void onTestEnd(CallTable calls) throws Exception {
+                calls.assertNext("let", new AddOperation(59), new SubtractOperation(35));
+                calls.assertNext("print", "24.0"); // use print to verify result
+                calls.assertEnd();
+              }
+            });
+    
+    tester.test(
+            "Adding two negative constants",
+            lines("let x = -5 + -3;",
+                  "print x;"),
+            new TestCriteria() {
+              @Override
+              public void onTestEnd(CallTable calls) throws Exception {
+                calls.assertNext("let", new AddOperation(-5), new AddOperation(-3));
+                calls.assertNext("print", "-8.0"); // use print to verify result
+                calls.assertEnd();
+              }
+            });
 
     tester.test(
         "Add two variables",

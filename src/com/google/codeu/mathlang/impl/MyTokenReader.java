@@ -14,7 +14,10 @@
 
 package com.google.codeu.mathlang.impl;
 
+
 import java.io.IOException;
+import java.lang.NumberFormatException;
+
 import java.lang.StringBuilder;
 
 import com.google.codeu.mathlang.core.tokens.Token;
@@ -53,7 +56,6 @@ public final class MyTokenReader implements TokenReader {
       read();
     }
     if (remaining() <= 0) {
-      System.out.println("Returning null!");
       return null;
     } else if (peek() == '"') {
       return interpretToken(readWithQuotes());
@@ -93,7 +95,6 @@ public final class MyTokenReader implements TokenReader {
       currentToken.append(read());
     }
     read();
-    System.out.println(currentToken.toString());
     return currentToken.toString();
   }
   
@@ -107,8 +108,7 @@ public final class MyTokenReader implements TokenReader {
 	    		return currentToken.toString();
     		} else if (currentToken.charAt(previousIndex) == '='){
 	    		return currentToken.toString();
-    		}
-    		else if(peek() == ';') {
+    		} else if(peek() == ';') {
 	    		return currentToken.toString();
 	    	} else if(peek() == '+') {
 	    		return currentToken.toString();
@@ -121,7 +121,6 @@ public final class MyTokenReader implements TokenReader {
     		currentToken.append(read());
     	}
     }
-    System.out.println(currentToken.toString());
     return currentToken.toString();
   }
   
@@ -137,11 +136,9 @@ public final class MyTokenReader implements TokenReader {
 				return returnSymbolToken;
 		  	default:
 		  		if(Character.isLetter(tokenContent.charAt(0))) {
-		  			NameToken returnNameToken = new NameToken(tokenContent);
-					return returnNameToken;
+		  			return new NameToken(tokenContent);
 		  		} else if (Character.isDigit(tokenContent.charAt(0))){
-		  			NumberToken returnNumberToken = new NumberToken(Double.parseDouble(tokenContent));
-		  			return returnNumberToken;
+		  			return new NumberToken(Double.parseDouble(tokenContent));
 		  		} else {
 		  			throw new IOException("ERROR: Unexpected character inputted.");
 		  		}
@@ -152,12 +149,13 @@ public final class MyTokenReader implements TokenReader {
 		  return returnNameToken;
 		// String Tokens
 	  } else {
-		  if(tokenContent.charAt(0) == '-') {
-			  NumberToken returnNumberToken = new NumberToken(Double.parseDouble(tokenContent));
-			  return returnNumberToken;
+		  try {
+			  Double.parseDouble(tokenContent);
+			  return new NumberToken(Double.parseDouble(tokenContent));
+		  } catch(NumberFormatException e) {
+			  return new StringToken(tokenContent);
 		  }
-		  StringToken returnStringToken = new StringToken(tokenContent);
-		  return returnStringToken;
+		  
 	  }
   }
 
