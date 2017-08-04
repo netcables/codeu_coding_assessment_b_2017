@@ -127,6 +127,17 @@ final class Test {
             calls.assertEnd();
           }
         });
+    
+    tester.test(
+            "Print One String with Numbers",
+            lines("print \"12345\";"),
+            new TestCriteria() {
+              @Override
+              public void onTestEnd(CallTable calls) throws Exception {
+                calls.assertNext("print", "12345");
+                calls.assertEnd();
+              }
+            });
 
     tester.test(
         "Assign variable as constant",

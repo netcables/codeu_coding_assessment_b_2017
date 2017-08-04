@@ -58,7 +58,7 @@ public final class MyTokenReader implements TokenReader {
     if (remaining() <= 0) {
       return null;
     } else if (peek() == '"') {
-      return interpretToken(readWithQuotes());
+      return readWithQuotes();
     } else {
       return interpretToken(readWithNoQuotes());
     }
@@ -86,7 +86,7 @@ public final class MyTokenReader implements TokenReader {
   }
   
   // Helper function to read text within quotes (notes).
-  private String readWithQuotes() throws IOException {
+  private Token readWithQuotes() throws IOException {
     currentToken.setLength(0);
     if (read() != '"') {
       throw new IOException("Strings must start with quote.");
@@ -95,7 +95,7 @@ public final class MyTokenReader implements TokenReader {
       currentToken.append(read());
     }
     read();
-    return currentToken.toString();
+    return new StringToken(currentToken.toString());
   }
   
   // Helper function to read text outside of quotes.
