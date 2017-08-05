@@ -126,8 +126,10 @@ public final class MyTokenReader implements TokenReader {
   
   // Helper function to interpret different types of tokens
   private Token interpretToken(String tokenContent) throws IOException{
+	  // Check if single character or Token
 	  if(tokenContent.length() == 1) {
 		  switch(tokenContent.charAt(0)) {
+		  	// Single character is a symbol
 		  	case '+':
 		  	case '-':
 		  	case '=':
@@ -135,23 +137,27 @@ public final class MyTokenReader implements TokenReader {
 		  		SymbolToken returnSymbolToken = new SymbolToken(tokenContent.charAt(0));
 				return returnSymbolToken;
 		  	default:
+		  		// Single character is a variable
 		  		if(Character.isLetter(tokenContent.charAt(0))) {
 		  			return new NameToken(tokenContent);
+		  		// Single character is a number
 		  		} else if (Character.isDigit(tokenContent.charAt(0))){
 		  			return new NumberToken(Double.parseDouble(tokenContent));
+		  		// Unexpected character
 		  		} else {
 		  			throw new IOException("ERROR: Unexpected character inputted.");
 		  		}
 		  }
-		// Name Tokens
+		// Token is a function
 	  } else if(tokenContent.equals("note") || tokenContent.equals("print") || tokenContent.equals("let")) {
 		  NameToken returnNameToken = new NameToken(tokenContent);
 		  return returnNameToken;
-		// String Tokens
 	  } else {
+		  // Token is a number with multiple digits
 		  try {
 			  Double.parseDouble(tokenContent);
 			  return new NumberToken(Double.parseDouble(tokenContent));
+			// Token is a string
 		  } catch(NumberFormatException e) {
 			  return new StringToken(tokenContent);
 		  }
